@@ -35,15 +35,23 @@ export default class ICalendar extends CalendarBase {
       .setMeta('UID', ics.getUid())
       .setMeta('DTSTAMP', time.getTimeCreated())
       .setMeta('PRODID', ics.getProdId())
-
-    this
       .addProperty('CLASS', 'PUBLIC')
       .addProperty('DESCRIPTION', ics.formatText(this.description))
-      .addProperty('DTSTART', time.formatDate(this.start, FORMAT.FULL))
-      .addProperty('DTEND', time.formatDate(this.end, FORMAT.FULL))
       .addProperty('LOCATION', ics.formatText(this.location))
       .addProperty('SUMMARY', ics.formatText(this.title))
       .addProperty('TRANSP', 'TRANSPARENT')
+
+    if (this.isAllDay) {
+      // for all-day events, omit the time and just place dates
+      this
+        .addProperty('DTSTART;VALUE=DATE', time.formatDate(this.start, FORMAT.DATE))
+        .addProperty('DTEND;VALUE=DATE', time.formatDate(this.end, FORMAT.DATE))
+    } else {
+      // otherwise, set the full start and end dates
+      this
+        .addProperty('DTSTART', time.formatDate(this.start, FORMAT.FULL))
+        .addProperty('DTEND', time.formatDate(this.end, FORMAT.FULL))
+    }
 
     if (this.recurrence) {
       this.addProperty('RRULE', ics.getRrule(this.recurrence))

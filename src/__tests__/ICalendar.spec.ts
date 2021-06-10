@@ -24,6 +24,20 @@ describe('ICalendar', () => {
     expect(result).toBeInstanceOf(CalendarBase)
   })
 
+  it('should render just the date for an all-day event', () => {
+    const obj = new ICalendar({
+      title: 'Fun Party',
+      description: 'BYOB',
+      location: 'New York',
+      start: new Date('2019-07-04T19:00:00.000')
+    })
+
+    expect(obj.render()).toContain([
+      `DTSTART;VALUE=DATE:${time.formatDate(baseOpts.start, FORMAT.DATE)}`,
+      `DTEND;VALUE=DATE:${time.formatDate(baseOpts.end, FORMAT.DATE)}`
+    ].join('\n'))
+  })
+
   describe('addAlarm()', () => {
     let obj: ICalendar
 
@@ -242,11 +256,11 @@ describe('ICalendar', () => {
         'BEGIN:VEVENT',
         'CLASS:PUBLIC',
         `DESCRIPTION:${baseOpts.description}`,
-        `DTSTART:${time.formatDate(baseOpts.start, FORMAT.FULL)}`,
-        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         `LOCATION:${baseOpts.location}`,
         `SUMMARY:${baseOpts.title}`,
         'TRANSP:TRANSPARENT',
+        `DTSTART:${time.formatDate(baseOpts.start, FORMAT.FULL)}`,
+        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         'END:VEVENT',
         'END:VCALENDAR',
         `UID:${mockUuid}`,
@@ -281,22 +295,22 @@ describe('ICalendar', () => {
         'BEGIN:VEVENT',
         'CLASS:PUBLIC',
         `DESCRIPTION:${secondEventOpts.description}`,
-        `DTSTART:${time.formatDate(secondEventOpts.start, FORMAT.FULL)}`,
-        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         `LOCATION:${secondEventOpts.location}`,
         `SUMMARY:${secondEventOpts.title}`,
         'TRANSP:TRANSPARENT',
+        `DTSTART:${time.formatDate(secondEventOpts.start, FORMAT.FULL)}`,
+        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         'END:VEVENT',
 
         // base event
         'BEGIN:VEVENT',
         'CLASS:PUBLIC',
         `DESCRIPTION:${baseOpts.description}`,
-        `DTSTART:${time.formatDate(baseOpts.start, FORMAT.FULL)}`,
-        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         `LOCATION:${baseOpts.location}`,
         `SUMMARY:${baseOpts.title}`,
         'TRANSP:TRANSPARENT',
+        `DTSTART:${time.formatDate(baseOpts.start, FORMAT.FULL)}`,
+        `DTEND:${time.formatDate(baseOpts.end, FORMAT.FULL)}`,
         'END:VEVENT',
 
         'END:VCALENDAR',
